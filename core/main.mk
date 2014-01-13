@@ -473,6 +473,7 @@ subdirs := \
 	external/expat \
 	external/flac \
 	external/freetype \
+	external/fsck_msdos \
 	external/gcc-demangle \
 	external/genext2fs \
 	external/giflib \
@@ -488,6 +489,7 @@ subdirs := \
 	external/libsepol \
 	external/mksh \
 	external/openssl \
+	external/pigz \
 	external/protobuf \
 	external/qemu \
 	external/scrypt \
@@ -540,6 +542,7 @@ subdirs := \
 	prebuilts/tools/linux-x86/sdl \
 	sdk/emulator \
 	system/core \
+	system/vold \
 	system/bluetooth \
 	system/extras/ext4_utils \
 	system/media/audio_utils \
