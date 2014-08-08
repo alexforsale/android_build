@@ -60,6 +60,7 @@ PRODUCT_PACKAGES += \
     requestsync \
     screenrecord \
     telephony-common \
+    recovery_resize2fs \
     voip-common \
     telephony-msim
 
