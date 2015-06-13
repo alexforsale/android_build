@@ -62,6 +62,7 @@ PRODUCT_PACKAGES += \
     telephony-common \
     recovery_resize2fs \
     voip-common \
+    recovery_resize2fs \
     telephony-msim
 
 # for Ubuntu Touch (hybris, platform-api, utils, etc)
