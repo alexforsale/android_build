@@ -84,7 +84,7 @@ def CloseInheritedPipes():
       pass
 
 
-def LoadInfoDict(zip, type):
+def LoadInfoDict(zip):
   """Read and parse the META/misc_info.txt key/value pairs from the
   input target files and return a dict."""
 
@@ -126,11 +126,6 @@ def LoadInfoDict(zip, type):
   if "fstab_version" not in d:
     d["fstab_version"] = "1"
 
-  if "device_type" not in d:
-    d["device_type"] = type
-
-  if d["device_type"] not in ("MTD", "MMC"):
-    d["device_type"] = "MMC"
   try:
     data = zip.read("META/imagesizes.txt")
     for line in data.split("\n"):
@@ -157,7 +152,7 @@ def LoadInfoDict(zip, type):
   makeint("boot_size")
   makeint("fstab_version")
 
-  d["fstab"] = LoadRecoveryFSTab(zip, d["fstab_version"], d["device_type"])
+  d["fstab"] = LoadRecoveryFSTab(zip, d["fstab_version"])
   d["build.prop"] = LoadBuildProp(zip)
   return d
 
@@ -176,15 +171,12 @@ def LoadBuildProp(zip):
     d[name] = value
   return d
 
-def LoadRecoveryFSTab(zip, fstab_version, type):
+def LoadRecoveryFSTab(zip, fstab_version):
   class Partition(object):
     pass
 
   try:
-    if type == 'MTD':
-        data = zip.read("RECOVERY/RAMDISK/etc/recovery_nand.fstab")
-    elif type == 'MMC':
-        data = zip.read("RECOVERY/RAMDISK/etc/recovery.fstab")
+    data = zip.read("RECOVERY/RAMDISK/etc/recovery.fstab")
   except KeyError:
     print "Warning: could not find RECOVERY/RAMDISK/etc/recovery.fstab in %s." % zip
     data = ""
@@ -509,9 +501,6 @@ def CheckSize(data, target, info_dict):
   if target.endswith(".img"): target = target[:-4]
   mount_point = "/" + target
 
-  fs_type = None
-  limit = 1
-
   if info_dict["fstab"]:
     if mount_point == "/userdata": mount_point = "/data"
     p = info_dict["fstab"][mount_point]
@@ -520,7 +509,7 @@ def CheckSize(data, target, info_dict):
     if "/" in device:
       device = device[device.rfind("/")+1:]
     limit = info_dict.get(device + "_size", None)
-    if not fs_type or not limit: return
+  if not fs_type or not limit: return
 
   if fs_type == "yaffs2":
     # image size should be increased by 1/64th to account for the
@@ -975,8 +964,15 @@ def ComputeDifferences(diffs):
 
 
 # map recovery.fstab's fs_types to mount/format "partition types"
-PARTITION_TYPES = { "yaffs2": "MTD", "mtd": "MTD",
-                    "ext4": "EMMC", "emmc": "EMMC" }
+PARTITION_TYPES = { "bml": "BML",
+                    "ext2": "EMMC",
+                    "ext3": "EMMC",
+                    "ext4": "EMMC",
+                    "emmc": "EMMC",
+                    "f2fs": "EMMC",
+                    "mtd": "MTD",
+                    "yaffs2": "MTD",
+                    "vfat": "EMMC" }
 
 def GetTypeAndDevice(mount_point, info):
   fstab = info["fstab"]
