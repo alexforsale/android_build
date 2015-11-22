@@ -555,6 +555,7 @@ subdirs += \
 	device/samsung \
 	device/motorola \
 	device/qcom \
+	device/xiaomi \
 	vendor/asus \
 	vendor/audience \
 	vendor/broadcom \
@@ -567,6 +568,7 @@ subdirs += \
 	vendor/qcom \
 	vendor/samsung \
 	vendor/widevine \
+	vendor/xiaomi \
 	vendor/motorola
 
 # Specific projects for Ubuntu Touch
